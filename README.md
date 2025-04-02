@@ -20,35 +20,48 @@ ollama-storage-service/
 │   ├── models.py            # Pydantic models
 │   ├── database.py          # MongoDB connection
 │   └── routes/
-│       └── save.py          # /save endpoint
-├── .env                     # Env variables
+│       └── save.py          # /save and /health endpoints
+├── .env                     # Env variables (local/dev)
 ├── .env.template            # Sample config
+├── .env.prod.template       # Sample prod config
 ├── requirements.txt         # Dependencies
 ├── Dockerfile               # Docker image config
-├── docker-compose.yml       # Run locally
+├── docker-compose.yml       # For development
+├── docker-compose.prod.yml  # For production
 └── README.md                # Documentation
 ```
 
 ---
 
 ## ⚙️ Environment Variables
-Create a `.env` file using `.env.template`:
+Create a `.env` or `.env.prod` file using the templates:
 
 ```env
-MONGO_URI=your_mongo_connection_string
+MONGO_URI=mongodb+srv://your_user:your_pass@your_cluster.mongodb.net/?retryWrites=true&w=majority
+DB_NAME=ollama
+COLLECTION_NAME=responses
+```
+
+To use the **local MongoDB container** (via Docker):
+```env
+MONGO_URI=mongodb://mongo:27017
 DB_NAME=ollama
 COLLECTION_NAME=responses
 ```
 
 ---
 
-## ▶️ Run Locally
+## ▶️ Run Locally (Development)
 ```bash
-# Build and start
 docker-compose up --build
 ```
 
-Service will be available at: [http://localhost:8001/save](http://localhost:8001/save)
+## 🚀 Run in Production
+```bash
+docker-compose -f docker-compose.prod.yml up --build -d
+```
+
+Service will be available at: [http://localhost:8001](http://localhost:8001)
 
 ---
 
@@ -71,5 +84,23 @@ Service will be available at: [http://localhost:8001/save](http://localhost:8001
 
 ---
 
+## 🔍 GET /health
+Checks DB connectivity:
+```json
+{
+  "status": "ok",
+  "documents": 42
+}
+```
+
+---
+
+## ✅ TO-DO
+- [ ] Integrate this API with the Ollama microservice (`POST /save`)
+- [ ] Add test suite with Pytest and Mongo mocking
+- [ ] Add Makefile or Taskfile for common dev commands
+
+---
+
 ## 🧠 Author
-Built with ❤️ by Yanioconjota
+Built with ❤️ by Janio
