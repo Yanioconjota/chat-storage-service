@@ -103,4 +103,4 @@ Checks DB connectivity:
 ---
 
 ## 🧠 Author
-Built with ❤️ by Janio
+by Janio
